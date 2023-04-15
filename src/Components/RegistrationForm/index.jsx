@@ -32,7 +32,7 @@ function RegistrationForm() {
     return (
 
         <form style={{ display: 'flex', flexDirection: "column" }} >
-            <h1>Registration</h1>
+            <h1>Spot Registration Form</h1>
             {
                 ['name', 'college', 'department', 'email', 'phone',].map((item) => {
                     return (
@@ -43,7 +43,7 @@ function RegistrationForm() {
                                 </label>
                             </div>
                             <div >
-                                <input id="inline-full-name" type={() => getType(item)} onChange={(e) => body[item] = e.target.value} />
+                                <input id="inline-full-name" {...(item !=='email' && { required: true })}  type={() => getType(item)} onChange={(e) => body[item] = e.target.value} />
                             </div>
                         </div>
                     )

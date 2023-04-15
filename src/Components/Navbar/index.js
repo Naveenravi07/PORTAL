@@ -20,7 +20,7 @@ const Navbar = () => {
                     </li>
                     <li className="mx-4 text-white">
                         <Link href="/admin/registrations/all">
-                            Registrations
+                            Responses
                         </Link>
                     </li>
                 </ul>

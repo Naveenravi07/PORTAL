@@ -2,9 +2,11 @@ import React, { useContext, useState ,} from 'react'
 import instance from '@/Helpers/axios'
 import { toast } from 'react-toastify'
 import { parentStore } from '@/pages/_app'
+import { useRouter } from 'next/router'
 
 
 function LoginForm() {
+    const router = useRouter()
     const [body] = useState({})
     const { parentState, setParentState } = useContext(parentStore)
 
@@ -16,6 +18,7 @@ function LoginForm() {
                     setParentState({ admin: true })
                     sessionStorage.setItem('data',JSON.stringify({admin:true}))
                     toast.success('Login Success')
+                    router.push('/admin/registrations/all')
                 }
                 else toast('Login Failed')
             })

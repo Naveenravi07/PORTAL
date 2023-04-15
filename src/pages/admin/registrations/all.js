@@ -1,15 +1,22 @@
 import instance from '@/Helpers/axios'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 function all() {
+    const router = useRouter()
     const [data, setData] = useState([])
+    const [loader, setLoader] = useState(true)
 
     const getAllRegistrations = () => {
-        instance.get('/admin/registrations/all').then((res) => {
+        instance.get('/admin/registrations/all', { params: { createdAt: -1} }).then((res) => {
             setData(res.data.data)
+            setLoader(false)
         }).catch((err) => {
             toast("Error Occured")
+            setLoader(false)
         })
     }
 
@@ -21,90 +28,147 @@ function all() {
         })
     }
 
+    const handleSearch = (text) => {
+        if (text == '') {
+            getAllRegistrations()
+        }
+        else {
+            instance.get('/admin/registration/search', { params: { name: text } })
+                .then((res) => {
+                    setData(res.data.data)
+                    setLoader(false)
+                }).catch((err) => {
+                    toast("Error Occured")
+                    setLoader(false)
+                })
+        }
+    }
+
+    const handleFilter = async (value, event) => {
+        const key = event.target.options[event.target.selectedIndex].text
+        let query = { [value] :key }
+       if(key=="Valid" || key == "Invalid"){
+        query = {valid:value}
+       }
+        instance.get('/admin/registration/filter', { params: query }).then((res) => {
+            setData(res.data.data)
+        }).catch((err) => {
+            toast("Error Occured")
+        })
+    }
 
     useEffect(() => {
         getAllRegistrations()
     }, [])
 
-    return (
-        <div style={{ marginTop: "30px" }}>
-            <h1>All Registrations</h1>
-            <div class="w-80 flex items-center pl-10">
-                <label for="input-box" class="mr-3 text-sm font-medium text-gray-700">Search</label>
-                <input id="input-box" name="input-box" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
-            </div>
 
-            {/* </div> */}
-            <div class="sort-container" style={{ marginLeft: 'auto', width: 'max-content' }}>
-                <span>Sort by:</span>
-                <select id="tailwing-sort" onChange={(e) => handleSort(e.target.value)}>
-                    <option name='1' value={1}> Previously Created </option>
-                    <option name='-1' value={-1} >Recently Created</option>
-                </select>
-            </div>
-            <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
-                <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-4 font-medium text-gray-900">Name</th>
-                            <th scope="col" class="px-6 py-4 font-medium text-gray-900">Event</th>
-                            <th scope="col" class="px-6 py-4 font-medium text-gray-900">College</th>
-                            <th scope="col" class="px-6 py-4 font-medium text-gray-900">Valid</th>
-                            <th scope="col" class="px-6 py-4 font-medium text-gray-900">Items</th>
-                            <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-                        {data && data.map((registration) => {
-                            return (
-                                <tr class="hover:bg-gray-50">
-                                    <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
-                                        <div class="relative h-10 w-10">
-                                            <img
-                                                class="h-full w-full rounded-full object-cover object-center"
-                                                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt=""
-                                            />
-                                            <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
-                                        </div>
-                                        <div class="text-sm">
-                                            <div class="font-medium text-gray-700">{registration.name}</div>
-                                            <div class="text-gray-400">{registration.phone}</div>
-                                        </div>
-                                    </th>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600"
-                                        >
-                                            <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
-                                            {registration.event}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">{registration.college}</td>
-                                    <td class="px-6 py-4">{registration.valid ? "Valid" : "Invalid"}</td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex gap-2">
-                                            {registration.items.length > 1 ? <>
-                                                {
-                                                    registration.items.map((item) => {
-                                                        return (
-                                                            <span
-                                                                class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
-                                                            >
-                                                                {item}
-                                                            </span>
-                                                        )
-                                                    })
-                                                }
-                                            </> : <span
-                                                class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600"
-                                            >
-                                                {registration.event}
-                                            </span>}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {/* <div class="flex justify-end gap-4">
+    if (loader) return (
+        <div style={{ justifyContent: 'center', display: 'flex', marginTop: '70px' }}>
+            <Box sx={{ display: 'flex' }}>
+                <CircularProgress size="5rem" />
+            </Box>
+        </div>
+    )
+
+    else
+        return (
+            <div>
+                <div style={{ marginTop: "30px" }}>
+                    <h1>All Registrations</h1>
+                    <div style={{ display: 'flex', margin: 'auto' }}>
+                        <div class="w-80 flex items-center pl-10">
+                            <label for="input-box" class="mr-3 text-sm font-medium text-gray-700">Search</label>
+                            <input id="input-box" name="input-box" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 text-sm" onChange={(e) => handleSearch(e.target.value)} />
+                        </div>
+                        <div class="sort-container" style={{ marginLeft: 'auto', width: 'max-content' }}>
+                            <span>Sort by:</span>
+                            <select id="tailwing-sort" onChange={(e) => handleSort(e.target.value)}>
+                                <option name='-1' value={-1} >Recently Created</option>
+                                <option name='1' value={1}> Previously Created </option>
+                            </select>
+                        </div>
+                        <div class="sort-container" style={{ margin: 'auto', width: 'max-content' }}>
+                            <span>Filter by:</span>
+                            <select id="tailwing-sort" onChange={(e) => handleFilter(e.target.value, e)}>
+                                <option name='valid' value={'true'}> Valid </option>
+                                <option name='valid' value={'false'} >Invalid</option>
+                                <option name='event' value={'event'} >Coding Challenge </option>
+                                <option name='event' value={'event'} >Capture The Shot</option>
+                                <option name='event' value={'event'} >Logo Quiz</option>
+                                <option name='event' value={'event'} >PC ASSEMBLING DISASSEMBLING COMPETITION</option>
+                                <option name='event' value={'event'} >VR & GAMING EXPERIENCE CENTRE</option>
+                                <option name='event' value={'event'} >ENGINEERING DESIGN</option>
+                            </select>
+                        </div>
+
+                        {/* </div> */}
+
+                    </div>
+                    <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
+                        <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                <th scope="col" class="px-6 py-4 font-medium text-gray-900">SL NO</th>
+                                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Name</th>
+                                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Event</th>
+                                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">College</th>
+                                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Valid</th>
+                                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Items</th>
+                                    <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 border-t border-gray-100">
+                                {data && data.map((registration) => {
+                                    return (
+                                        <tr class="hover:bg-gray-50" style={{ cursor: 'pointer' }} onClick={() => router.push(`/admin/registrationDetails/${registration._id}`)}>
+                                            <td class="px-6 py-4">{registration.registerId}</td>
+                                            <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
+                                                <div class="relative h-10 w-10">
+                                                    <img
+                                                        class="h-full w-full rounded-full object-cover object-center"
+                                                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                        alt=""
+                                                    />
+                                                    <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
+                                                </div>
+                                                <div class="text-sm">
+                                                    <div class="font-medium text-gray-700">{registration.name}</div>
+                                                    <div class="text-gray-400">{registration.phone}</div>
+                                                </div>
+                                            </th>
+                                            <td class="px-6 py-4">
+                                                <span
+                                                    class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600"
+                                                >
+                                                    <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                                                    {registration.event}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4">{registration.college}</td>
+                                            <td class="px-6 py-4">{registration.valid ? "Valid" : "Invalid"}</td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex gap-2">
+                                                    {registration.items.length > 1 ? <>
+                                                        {
+                                                            registration.items.map((item) => {
+                                                                return (
+                                                                    <span
+                                                                        class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
+                                                                    >
+                                                                        {item}
+                                                                    </span>
+                                                                )
+                                                            })
+                                                        }
+                                                    </> : <span
+                                                        class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600"
+                                                    >
+                                                        {registration.event}
+                                                    </span>}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {/* <div class="flex justify-end gap-4">
                                             <a x-data="{ tooltip: 'Delete' }" href="#">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -140,16 +204,18 @@ function all() {
                                                 </svg>
                                             </a>
                                         </div> */}
-                                    </td>
-                                </tr>
-                            )
-                        })}
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
 
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    )
+        )
 }
+
 
 export default all

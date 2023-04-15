@@ -30,7 +30,7 @@ function registrationDetails() {
     };
 
     const markAsRead = async () => {
-       await instance.patch('/admin/registration/markasread', null, { params: { id: router.query.id } })
+        await instance.patch('/admin/registration/markasread', null, { params: { id: router.query.id } })
             .then((response) => {
                 setData(response.data.data)
                 toast("Registration Marked As Read")
@@ -40,7 +40,7 @@ function registrationDetails() {
     }
 
     return (
-        <>
+        <div style={{marginTop:'50px'}}>
             {data !== null && <div className="h-screen flex flex-col items-center ">
                 <h1 className="text-2xl font-bold mb-4">Registration Details</h1>
                 <div className="border border-gray-300 rounded-lg p-4">
@@ -50,18 +50,20 @@ function registrationDetails() {
                     <TextDisplay label="Email" value={data.email} />
                     <TextDisplay label="Phone" value={data.phone} />
                     <TextDisplay label="Event" value={data.event} />
+                    <TextDisplay label="Register Id" value={data.registerId} />
                     <TextDisplay label="Items" value={`${data.items.map((item) => ` ${item}  `)} `} />
                     <div className="flex justify-end mt-4">
-                        {data.valid === true && <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mr-4">
-                            VALID
-                        </button>}
-                        <button className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded" onClick={()=>markAsRead()}>
-                            Mark As Read
+                        <button className={`${data.valid?'bg-blue-500 hover:bg-blue-600':'bg-red-500 hover:bg-red-600'} text-white py-2 px-4 rounded mr-4`}>
+                            {data.valid ? "Valid" : "Invalid"}
                         </button>
+
+                        {data.valid === true && <button className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded" onClick={() => markAsRead()}>
+                            Mark As Read
+                        </button>}
                     </div>
                 </div>
             </div>}
-        </>
+        </div>
     )
 }
 
