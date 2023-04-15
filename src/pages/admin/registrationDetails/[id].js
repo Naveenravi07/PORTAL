@@ -32,7 +32,7 @@ function registrationDetails() {
     const markAsRead = async () => {
        await instance.patch('/admin/registration/markasread', null, { params: { id: router.query.id } })
             .then((response) => {
-                setData(response.data)
+                setData(response.data.data)
                 toast("Registration Marked As Read")
             }).catch((err) => {
                 toast("Error Occured")
