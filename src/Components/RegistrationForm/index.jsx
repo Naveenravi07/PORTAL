@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import instance from '@/Helpers/axios'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 
 function RegistrationForm() {
+    const router = useRouter()
     const [body] = useState({ items: [], })
     const events = ['Coding Challenge', 'Capture The Shot', 'Logo Quiz', 'PC ASSEMBLING DISASSEMBLING COMPETITION', 'VR & GAMING EXPERIENCE CENTRE', 'ENGINEERING DESIGN']
     const [isVrSelected, setIsVRSelected] = useState(false)
@@ -13,7 +15,10 @@ function RegistrationForm() {
             body.items = body.items.map((item) => item.value)
         }
         instance.post('/admin/register', body)
-            .then((response) => toast("Applied Successfully"))
+            .then((response) => {
+                toast("Applied Successfully")
+                router.push(`/admin/registrationDetails/${response.data.data._id}`)
+            })
             .catch((err) => toast("Error Occured"))
     }
 

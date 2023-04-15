@@ -1,13 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Scanner from '@/Components/Scanner'
+import { useRouter } from 'next/router';
 
 function scan() {
-  const [txt, setTxt] = useState()
+  const router = useRouter()
+  const [success, setSuccess] = useState(false)
+  const [text, setText] = useState(null)
 
   const onNewScanResult = (decodedText, decodedResult) => {
-    console.log(decodedResult.result.text)
-    setTxt(decodedResult.result.text)
+    setText(decodedResult.result.text)
+    setSuccess(true)
   };
+
+  useEffect(() => {
+    if (success) {
+      router.push(`/admin/registrationDetails/${text}`)
+    }
+  }, [success])
+
   return (
     <div>
       <Scanner
