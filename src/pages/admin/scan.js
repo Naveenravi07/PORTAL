@@ -1,26 +1,21 @@
-import {useState} from 'react'
-import { QrReader } from 'react-qr-reader';
+import React, { useState } from 'react'
+import Scanner from '@/Components/Scanner'
 
 function scan() {
-  const [data, setData] = useState('No result');
+  const [txt, setTxt] = useState()
 
+  const onNewScanResult = (decodedText, decodedResult) => {
+    console.log(decodedResult.result.text)
+    setTxt(decodedResult.result.text)
+  };
   return (
     <div>
-
-        <QrReader
-          onResult={(result, error) => {
-            if (!!result) {
-              setData(result?.text);
-            }
-
-            if (!!error) {
-              console.info(error);
-            }
-          }}
-          style={{ width: '100%' }}
-        />
-        <p>{data}</p>
- 
+      <Scanner
+        fps={10}
+        qrbox={250}
+        disableFlip={false}
+        qrCodeSuccessCallback={onNewScanResult}
+      />
     </div>
   )
 }
