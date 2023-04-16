@@ -3,7 +3,7 @@ import RegistrationForm from '../../Components/RegistrationForm/index'
 
 function register() {
     return (
-        <div>
+        <div style={{marginTop:'50px'}}>
             <RegistrationForm />
         </div>
     )

@@ -1,15 +1,25 @@
-import React, { useState } from 'react'
+import React, { useContext, useState ,} from 'react'
 import instance from '@/Helpers/axios'
 import { toast } from 'react-toastify'
+import { parentStore } from '@/pages/_app'
+import { useRouter } from 'next/router'
+
 
 function LoginForm() {
+    const router = useRouter()
     const [body] = useState({})
+    const { parentState, setParentState } = useContext(parentStore)
 
     const handleSubmit = (e) => {
         e.preventDefault()
         instance.post('/admin/login', body)
             .then((response) => {
-                if (response.data.loggedIn) toast.success('Login Success')
+                if (response.data.loggedIn) {
+                    setParentState({ admin: true })
+                    sessionStorage.setItem('data',JSON.stringify({admin:true}))
+                    toast.success('Login Success')
+                    router.push('/admin/registrations/all')
+                }
                 else toast('Login Failed')
             })
             .catch((err) => {
@@ -23,11 +33,11 @@ function LoginForm() {
             <div class="w-full max-w-md space-y-8">
                 <div>
                     <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
-                    <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Sign in to your account</h2>
-                    <p class="mt-2 text-center text-sm text-gray-600">
+                    <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">ADMIN LOGIN</h2>
+                    {/* <p class="mt-2 text-center text-sm text-gray-600">
                         Or
                         <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">start your 14-day free trial</a>
-                    </p>
+                    </p> */}
                 </div>
                 <form class="mt-8 space-y-6" action="#" onSubmit={(e) => handleSubmit(e)} >
                     <input type="hidden" name="remember" value="true" />
