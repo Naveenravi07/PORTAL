@@ -15,9 +15,12 @@ function RegistrationForm() {
             body.items = body.items.map((item) => item.value)
         }
         instance.post('/admin/register', body)
-            .then((response) => {
-                toast("Applied Successfully")
-                router.push(`/admin/registrationDetails/${response.data.data._id}`)
+            .then(({data}) => {
+                if(!data.data)  toast("Error Occured")
+                else{
+                    router.push(`/admin/registrationDetails/${data.data._id}`)
+                    toast("Applied Successfully")
+                }
             })
             .catch((err) => toast("Error Occured"))
     }
@@ -31,19 +34,19 @@ function RegistrationForm() {
 
     return (
 
-        <form style={{ display: 'flex', flexDirection: "column" }} >
-            <h1>Spot Registration Form</h1>
+        <form style={{ display: 'flex', flexDirection: "column" }} className='bg-white bg-opacity-50 backdrop-filter backdrop-blur-md border-2 border-gray-300 border-opacity-50 rounded-lg p-6 shadow-lg' >
+            <h1 className='mb-8'>Spot Registration Form</h1>
             {
                 ['name', 'college', 'department', 'email', 'phone',].map((item) => {
                     return (
                         <div class="md:flex md:items-center mb-6">
                             <div class="md:w-1/3">
                                 <label >
-                                    {item}
+                                    {item.toUpperCase()}
                                 </label>
                             </div>
                             <div >
-                                <input id="inline-full-name" {...(item !=='email' && { required: true })}  type={() => getType(item)} onChange={(e) => body[item] = e.target.value} />
+                                <input id="inline-full-name"  type={() => getType(item)} onChange={(e) => body[item] = e.target.value} />
                             </div>
                         </div>
                     )
@@ -83,7 +86,7 @@ function RegistrationForm() {
                     )
                 })}
             </div>}
-            <button onClick={(e) => handleRegister(e)} class='submitButton' type='submit'>Register</button>
+            <button onClick={(e) => handleRegister(e)} class='bg-blue-500 bg-opacity-70 backdrop-filter backdrop-blur-lg border-2 border-gray-300 border-opacity-50 rounded-lg px-4 py-2 shadow-lg hover:bg-opacity-80 hover:border-opacity-80 hover:shadow-xl transition-all duration-300' type='submit'>Register</button>
         </form>
 
     )
