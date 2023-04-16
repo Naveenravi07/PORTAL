@@ -4,12 +4,13 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import events from '@/Helpers/constants/events';
 
 function all() {
     const router = useRouter()
     const [data, setData] = useState([])
     const [loader, setLoader] = useState(true)
-
+    console.log(events)
     const getAllRegistrations = () => {
         instance.get('/admin/registrations/all', { params: { createdAt: -1} }).then((res) => {
             setData(res.data.data)
@@ -104,12 +105,11 @@ function all() {
                             <select id="tailwing-sort" onChange={(e) => handleFilter(e.target.value, e)}>
                                 <option name='valid' value={'true'}> Valid </option>
                                 <option name='valid' value={'false'} >Invalid</option>
-                                <option name='event' value={'event'} >Coding Challenge </option>
-                                <option name='event' value={'event'} >Capture The Shot</option>
-                                <option name='event' value={'event'} >Logo Quiz</option>
-                                <option name='event' value={'event'} >PC ASSEMBLING DISASSEMBLING COMPETITION</option>
-                                <option name='event' value={'event'} >VR & GAMING EXPERIENCE CENTRE</option>
-                                <option name='event' value={'event'} >ENGINEERING DESIGN</option>
+                                {
+                                    events.map((event)=>
+                                    <option name='event' value={'event'} >{event}</option>
+                                    )
+                                }
                             </select>
                         </div>
 
