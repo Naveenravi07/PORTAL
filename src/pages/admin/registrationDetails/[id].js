@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import instance from '@/Helpers/axios'
 import { toast } from 'react-toastify'
+import oldDateFormatter from '@/Helpers/Functions/General/oldDateFormatter'
 
 
 function registrationDetails() {
@@ -87,6 +88,13 @@ function registrationDetails() {
                                     </div>
                                 </div>
 
+                                <div class="md:col-span-2">
+                                    <label for="country">Registerd  At</label>
+                                    <div class="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
+                                        <input id="country" class="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent" value={oldDateFormatter(data.createdAt)} disabled />
+                                    </div>
+                                </div>
+
 
                                 <div class="md:col-span-5">
                                     <label for="zipcode">Items</label>
@@ -98,7 +106,7 @@ function registrationDetails() {
                                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded " onClick={() => markAsRead()}>Mark As Read</button>
                                     </div>}
                                     <div class="inline-flex items-end pl-5">
-                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded " className={`${data.valid?'bg-blue-500 hover:bg-blue-600':'bg-red-500 hover:bg-red-600'} text-white py-2 px-4 rounded mr-4`}> {data.valid === true ? "Valid" : "Invalid"}</button>
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded " className={`${data.valid ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'} text-white py-2 px-4 rounded mr-4`}> {data.valid === true ? "Valid" : "Invalid"}</button>
                                     </div>
                                 </div>
 
