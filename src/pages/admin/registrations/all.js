@@ -87,7 +87,7 @@ function all() {
         return (
             <div>
                 <div style={{ marginTop: "30px" }}>
-                    <h1>All Registrations</h1>
+                    <h1 className='mb-12'>All Registrations</h1>
                     <div style={{ display: 'flex', margin: 'auto' }}>
                         <div class="w-80 flex items-center pl-10">
                             <label for="input-box" class="mr-3 text-sm font-medium text-gray-700">Search</label>
