@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useContext, createContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from '@/Components/Navbar';
+import Head from 'next/head';
 
 
 export const parentStore = createContext(null)
@@ -29,8 +30,9 @@ export default function App({ Component, pageProps }) {
 
   return (
     <div>
+      <Head > <title>Dhanus Registration </title>  </Head>
       <parentStore.Provider value={{parentState,setParentState}}>
-        <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHovertheme="dark" />
+        <ToastContainer theme='dark' position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHovertheme="dark" />
         <Navbar />
         <Component {...pageProps} />
       </parentStore.Provider>

@@ -20,7 +20,7 @@ function all() {
 
     const getAllRegistrations = (page) => {
         instance.get('/admin/registrations/valid/total').then((response)=>{
-            const pageCount = response.data.data.total/2
+            const pageCount = response.data.data.total/10
             setNoOfPages(Math.ceil(pageCount))
         })
         instance.get('/admin/registrations/all', { params: { sort: { createdAt: -1 }, page: page ? page : 1 } }).then((res) => {
