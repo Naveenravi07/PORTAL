@@ -5,14 +5,25 @@ import { useRouter } from 'next/router'
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import events from '@/Helpers/constants/events';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+
 
 function all() {
     const router = useRouter()
     const [data, setData] = useState([])
     const [loader, setLoader] = useState(true)
-    console.log(events)
-    const getAllRegistrations = () => {
-        instance.get('/admin/registrations/all', { params: { createdAt: -1} }).then((res) => {
+    const [noOfPages,setNoOfPages] = useState(null)
+    const [isPaginationOn,setIsPaginationOn] = useState(true)
+    const [query,setQuery]= useState(false)
+    const [queryValue,setQueryValie] = useState('')
+
+    const getAllRegistrations = (page) => {
+        instance.get('/admin/registrations/valid/total').then((response)=>{
+            const pageCount = response.data.data.total/10
+            setNoOfPages(Math.ceil(pageCount))
+        })
+        instance.get('/admin/registrations/all', { params: { sort: { createdAt: -1 }, page: page ? page : 1 } }).then((res) => {
             setData(res.data.data)
             setLoader(false)
         }).catch((err) => {
@@ -22,7 +33,9 @@ function all() {
     }
 
     const handleSort = (sortKey) => {
-        instance.get('/admin/registrations/all', { params: { createdAt: sortKey } }).then((res) => {
+        instance.get('/admin/registrations/all', { params: {sort:{ createdAt: sortKey }} }).then((res) => {
+            if(sortKey==-1) setIsPaginationOn(true)
+            else setIsPaginationOn(false)
             setData(res.data.data)
         }).catch((err) => {
             toast("Error Occured")
@@ -30,16 +43,22 @@ function all() {
     }
 
     const handleSearch = (text) => {
-        if (text == '') {
-            getAllRegistrations()
+        setQueryValie(text)
+        if (text == '' || text==null ||  text==undefined ) {
+            setIsPaginationOn(true)
+            getAllRegistrations(1)
+            setQuery(false)
         }
         else {
             instance.get('/admin/registration/search', { params: { name: text } })
                 .then((res) => {
+                    setIsPaginationOn(false)
                     setData(res.data.data)
                     setLoader(false)
+                    setQuery(true)
                 }).catch((err) => {
                     toast("Error Occured")
+                    setIsPaginationOn(true)
                     setLoader(false)
                 })
         }
@@ -48,12 +67,15 @@ function all() {
     const handleFilter = async (value, event) => {
         const key = event.target.options[event.target.selectedIndex].text
         let query = { [value] :key }
-       if(key=="Valid" || key == "Invalid"){
+        if(key=="Valid" || key == "Invalid"){
         query = {valid:value}
-       }
+        }
         instance.get('/admin/registration/filter', { params: query }).then((res) => {
             setData(res.data.data)
+            setIsPaginationOn(false)
+            if(key=="Valid") setIsPaginationOn(true)
         }).catch((err) => {
+            setIsPaginationOn(true)
             toast("Error Occured")
         })
     }
@@ -70,10 +92,20 @@ function all() {
         })
     }
 
+    const handleReset = (e)=>{
+     router.reload()
+    }
+
     useEffect(() => {
-        getAllRegistrations()
+        getAllRegistrations(1)
     }, [])
 
+    useEffect(() => {
+        if (query==false) {
+            setIsPaginationOn(true)
+            getAllRegistrations(1)
+        }
+    },[query])
 
     if (loader) return (
         <div style={{ justifyContent: 'center', display: 'flex', marginTop: '70px' }}>
@@ -91,7 +123,7 @@ function all() {
                     <div style={{ display: 'flex', margin: 'auto' }}>
                         <div class="w-80 flex items-center pl-10">
                             <label for="input-box" class="mr-3 text-sm font-medium text-gray-700">Search</label>
-                            <input id="input-box" name="input-box" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 text-sm" onChange={(e) => handleSearch(e.target.value)} />
+                            <input value={queryValue} id="input-box" name="input-box" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 text-sm" onChange={(e) => handleSearch(e.target.value)} />
                         </div>
                         <div class="sort-container" style={{ marginLeft: 'auto', width: 'max-content' }}>
                             <span>Sort by:</span>
@@ -100,7 +132,7 @@ function all() {
                                 <option name='1' value={1}> Previously Created </option>
                             </select>
                         </div>
-                        <div class="sort-container" style={{ margin: 'auto', width: 'max-content' }}>
+                        <div class="sort-container" style={{paddingLeft:'30px',margin:'auto'}} >
                             <span>Filter by:</span>
                             <select id="tailwing-sort" onChange={(e) => handleFilter(e.target.value, e)}>
                                 <option name='valid' value={'true'}> Valid </option>
@@ -112,7 +144,9 @@ function all() {
                                 }
                             </select>
                         </div>
-
+                        <div style={{ margin: 'auto', width: 'max-content' }}>
+                        <button onClick={(e)=>handleReset(e)}>Reset</button>
+                        </div>
                         {/* </div> */}
 
                     </div>
@@ -209,6 +243,9 @@ function all() {
                         </table>
                     </div>
                 </div>
+                {(noOfPages > 1 && isPaginationOn) && <Stack  alignItems="center">
+                    <Pagination className='pagination-center' count={noOfPages} onChange={(e,value)=>getAllRegistrations(value)} />
+                </Stack>}
             </div>
         )
 }
