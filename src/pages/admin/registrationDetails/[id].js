@@ -42,12 +42,14 @@ function registrationDetails() {
 
     return (
         <div style={{ marginTop: '50px' }}>
+          
             {data !== null && <div className=" flex flex-col items-center ">
                 <h1 className="text-2xl font-bold mb-4">Registration Details</h1>
                 <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
                     <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
                         <div class="text-gray-600">
-                            <p class="font-medium text-lg">Registration Details</p>
+                        <img src='/cek.png' style={{height:'60px',width:'90%'}} />
+                            {/* <p class="font-medium text-lg span-2">  </p> */}
                             {/* <p>Please fill out all the fields.</p> */}
                         </div>
 
@@ -108,31 +110,16 @@ function registrationDetails() {
                                     <div class="inline-flex items-end pl-5">
                                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded " className={`${data.valid ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'} text-white py-2 px-4 rounded mr-4`}> {data.valid === true ? "Valid" : "Invalid"}</button>
                                     </div>
+                                    <div class="inline-flex items-end pl-5">
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded " onClick={()=>router.push('/admin/register')} >New Registration</button>
+                                    </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
                 </div>
-                {/* <div className="border border-gray-300 rounded-lg p-4">
-                    <TextDisplay label="Name" value={data.name} />
-                    <TextDisplay label="College" value={data.college} />
-                    <TextDisplay label="Department" value={data.department} />
-                    <TextDisplay label="Email" value={data.email} />
-                    <TextDisplay label="Phone" value={data.phone} />
-                    <TextDisplay label="Event" value={data.event} />
-                    <TextDisplay label="Register Id" value={data.registerId} />
-                    <TextDisplay label="Items" value={`${data.items.map((item) => ` ${item}  `)} `} />
-                    <div className="flex justify-end mt-4">
-                        <button className={`${data.valid?'bg-blue-500 hover:bg-blue-600':'bg-red-500 hover:bg-red-600'} text-white py-2 px-4 rounded mr-4`}>
-                            {data.valid ? "Valid" : "Invalid"}
-                        </button>
 
-                        {data.valid === true && <button className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded" onClick={() => markAsRead()}>
-                            Mark As Read
-                        </button>}
-                    </div>
-                </div> */}
             </div>}
         </div>
     )
