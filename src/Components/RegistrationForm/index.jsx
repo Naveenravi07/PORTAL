@@ -18,7 +18,10 @@ function RegistrationForm() {
             .then(({data}) => {
                 if(!data.data)  toast("Error Occured")
                 else{
-                    router.push(`/admin/registrationDetails/${data.data._id}`)
+                    router.push({
+                        pathname:`/admin/registrationDetails/${data.data._id}`,
+                        query:{isRegisterdNow:true}
+                    })
                     toast("Applied Successfully")
                 }
             })
@@ -34,7 +37,7 @@ function RegistrationForm() {
 
     return (
 
-        <form style={{ display: 'flex', flexDirection: "column" }} className='bg-white bg-opacity-50 backdrop-filter backdrop-blur-md border-2 border-gray-300 border-opacity-50 rounded-lg p-6 shadow-lg' >
+        <form style={{ display: 'flex', flexDirection: "column" }} className='bg-white bg-opacity-50 backdrop-filter backdrop-blur-md border-2 border-gray-300 border-opacity-50 rounded-lg p-6 shadow-lg regForm' >
             <h1 className='mb-8'>Spot Registration Form</h1>
             {
                 ['name', 'college', 'department', 'email', 'phone',].map((item) => {
