@@ -68,3 +68,10 @@ label {
 .event_parent{
     padding-bottom: 30px;
 }
+
+.register_topbar_img{
+    display: flex;
+    margin: auto;
+    height: 76px;
+    margin-bottom: 51px;
+}

@@ -29,6 +29,7 @@ function LoginForm() {
 
     return (
         <section class="bg-gray-50 dark:bg-gray-900">
+             {/* <img src="/cek4.png" alt="logo" /> */}
             <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <img class="w-8 h-8 mr-2" src="/logo.png" alt="logo" style={{width:'200px',height:'200px'}} />
                 <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"> 
@@ -64,7 +65,7 @@ function LoginForm() {
                                 Don’t have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
                             </p>
                         </form>
-                    </div>
+                    </div>       
                 </div>
             </div>
         </section>
